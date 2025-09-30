@@ -4,14 +4,19 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.example.mobile.ui.theme.MobileTheme
+import kotlinx.coroutines.launch
+import com.example.mobile.data.mainactivity.ApiClient
+import com.example.mobile.data.mainactivity.ApiResponse
+import com.example.mobile.components.TextField
+import com.example.mobile.components.Button
+import com.example.mobile.components.AnswerCard
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -19,11 +24,11 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             MobileTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colorScheme.background
+                ) {
+                    FaqScreen()
                 }
             }
         }
@@ -31,17 +36,55 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
+fun FaqScreen() {
+    var question by remember { mutableStateOf("") }
+    var faqResponse by remember { mutableStateOf<ApiResponse?>(null) }
+    var isLoading by remember { mutableStateOf(false) }
+    val scope = rememberCoroutineScope()
+    val minCharacters = 3
+    val maxCharacters = 500
 
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    MobileTheme {
-        Greeting("Android")
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .statusBarsPadding()
+            .navigationBarsPadding()
+            .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = "FAQ Bot",
+            style = MaterialTheme.typography.headlineLarge,
+            modifier = Modifier.padding(bottom = 32.dp)
+        )
+
+        TextField(
+            value = question,
+            onValueChange = { question = it },
+            label = "Ask a question",
+            placeholder = "Type your question here...",
+            minCharacters = minCharacters,
+            maxCharacters = maxCharacters,
+            showCharacterCount = true
+        )
+
+        Button(
+            onClick = {
+                scope.launch {
+                    isLoading = true
+                    faqResponse = ApiClient.askQuestion(question)
+                    isLoading = false
+                }
+            },
+            text = "Get Answer",
+            isLoading = isLoading,
+            enabled = question.isNotEmpty()
+        )
+
+        AnswerCard(
+            response = faqResponse,
+            maxHeight = 300,
+            showTitle = true
+        )
     }
 }
