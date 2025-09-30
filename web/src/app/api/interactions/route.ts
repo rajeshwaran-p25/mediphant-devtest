@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { interactionRequestSchema } from "../../../lib/validation";
-import { Rules } from "../../../lib/rules";
+import { interactionRequestSchema } from "../../lib/validation";
+import { Rules } from "../../lib/rules";
 import type { InteractionResult } from "../../models";
 
 export async function POST(request: NextRequest) {

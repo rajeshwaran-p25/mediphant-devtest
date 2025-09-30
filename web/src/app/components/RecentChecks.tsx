@@ -1,4 +1,4 @@
-import type { RecentCheck } from "../app/models";
+import type { RecentCheck } from "../models";
 
 interface RecentChecksProps {
   checks: RecentCheck[];

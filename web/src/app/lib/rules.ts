@@ -1,4 +1,4 @@
-import type { InteractionResult } from "../app/models";
+import type { InteractionResult } from "../models";
 
 export const InteractionResults: InteractionResult[] = [
   {

@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import InteractionForm from "../../components/InteractionForm";
-import ResultCard from "../../components/ResultCard";
-import RecentChecks from "../../components/RecentChecks";
+import InteractionForm from "../components/InteractionForm";
+import ResultCard from "../components/ResultCard";
+import RecentChecks from "../components/RecentChecks";
 import type { InteractionResult, RecentCheck } from "../models";
 
 export default function InteractionsPage() {
